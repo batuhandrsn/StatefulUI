@@ -33,6 +33,8 @@ namespace StatefulUI.Runtime.References
         public bool ContainsInInnerComponent { get; set; }
         public int LocalizedTimes { get; set; }
 
+        private string _originalValue;
+
         private Color GetIdGuiColor()
         {
             if (LocalizedTimes > 1)
@@ -45,6 +47,9 @@ namespace StatefulUI.Runtime.References
 
         public void SetText(object text)
         {
+            if (string.IsNullOrEmpty(_originalValue))
+                _originalValue = Value;
+
             if (IsTextMeshPro)
             {
                 TMP.text = text.ToString();
@@ -53,6 +58,24 @@ namespace StatefulUI.Runtime.References
             {
                 Text.text = text.ToString();
             }
+        }
+
+        public void SetFormattedText(string arg0)
+        {
+            if (string.IsNullOrEmpty(_originalValue))
+                _originalValue = Value;
+
+            var format = string.Format(_originalValue, arg0);
+            SetText(format);
+        }
+
+        public void SetFormattedText(string arg0, string arg1)
+        {
+            if (string.IsNullOrEmpty(_originalValue))
+                _originalValue = Value;
+
+            var format = string.Format(_originalValue, arg0, arg1);
+            SetText(format);
         }
 
         public void SetActive(bool isActive)

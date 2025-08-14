@@ -83,7 +83,9 @@ namespace StatefulUI.Runtime.Core
             instance.SetActive(true);
             var instanceTransform = instance.transform;
             instanceTransform.SetParent(Root);
+            instanceTransform.localPosition = instanceTransform.localPosition.ChangeZ(0f);
             instanceTransform.localScale = Vector3.one;
+            instanceTransform.localRotation = Quaternion.identity;
 
             return instance;
         }

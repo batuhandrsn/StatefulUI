@@ -11,8 +11,9 @@ namespace StatefulUI.Runtime.References
         [Role(typeof(ObjectRoleAttribute), "Drop Link", "RemoveReference")]
         public int Role;
 
-
         [ChildOnly]
         public GameObject Object;
+
+        public Transform Transform => Object.transform;
     }
 }
