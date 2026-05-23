@@ -72,6 +72,8 @@ namespace StatefulUI.Runtime.States
         public float TextMeshProMaxFontSize;
         public TMP_FontAsset TextMeshProFont;
         public HorizontalAlignmentOptions TextMeshProTextHorizontalAlignment;
+        public Material TextMeshProFontMaterial;
+        public string TextMeshProText;
         
         
         [ChildOnly]
@@ -193,6 +195,8 @@ namespace StatefulUI.Runtime.States
                             TextMeshProImpactType.SetMaxFontSize => $"{TextMeshPro.GetName()} set max font size {TextMeshProMaxFontSize}",
                             TextMeshProImpactType.SetHorizontalAlignment => $"{TextMeshPro.GetName()} set h.align {TextMeshProTextHorizontalAlignment}",
                             TextMeshProImpactType.SetFont => $"{TextMeshPro.GetName()} set font {TextMeshProFont.GetName()}",
+                            TextMeshProImpactType.SetFontMaterial => $"{TextMeshPro.GetName()} set font material {TextMeshProFontMaterial.GetName()}",
+                            TextMeshProImpactType.SetText => $"{TextMeshPro.GetName()} set text {TextMeshProText}",
                             _ => "undefined"
                         };
                     case StateDescriptionTargetType.RectTransform: 

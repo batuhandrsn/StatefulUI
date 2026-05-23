@@ -26,7 +26,16 @@ namespace StatefulUI.Runtime.States
                 {
                     if (parentRole == 0) continue;
 
-                    var parentReference = view.States.Find(reference => reference.Role == (int) parentRole);
+                    StateReference parentReference = null;
+                    if (view.StateByRole != null)
+                    {
+                        if (!view.StateByRole.TryGetValue(parentRole, out parentReference))
+                            continue;
+                    }
+                    else
+                    {
+                        parentReference = view.States.Find(reference => reference.Role == (int)parentRole);
+                    }
                     if (parentReference == null || _markerSet.Contains(parentReference)) continue;
 
                     _markerSet.Add(parentReference);

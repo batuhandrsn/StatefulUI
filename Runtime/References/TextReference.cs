@@ -1,5 +1,6 @@
 using System;
 using StatefulUI.Runtime.Core;
+using StatefulUI.Runtime.Localization;
 using StatefulUI.Runtime.RoleAttributes;
 using TMPro;
 using UnityEngine;
@@ -45,7 +46,7 @@ namespace StatefulUI.Runtime.References
             return ContainsInInnerComponent ? new Color(1f, 0.94f, 0.73f) : Color.white;
         }
 
-        public void SetText(object text)
+        public void SetText(string text)
         {
             if (string.IsNullOrEmpty(_originalValue))
                 _originalValue = Value;
@@ -65,8 +66,12 @@ namespace StatefulUI.Runtime.References
             if (string.IsNullOrEmpty(_originalValue))
                 _originalValue = Value;
 
-            var format = string.Format(_originalValue, arg0);
-            SetText(format);
+            var format = _originalValue;
+            var translation = LocalizationUtils.GetPhrase(Identificator, string.Empty);
+            if (!string.IsNullOrEmpty(translation)) format = translation;
+
+            var text = string.Format(format, arg0);
+            SetText(text);
         }
 
         public void SetFormattedText(string arg0, string arg1)
@@ -74,8 +79,12 @@ namespace StatefulUI.Runtime.References
             if (string.IsNullOrEmpty(_originalValue))
                 _originalValue = Value;
 
-            var format = string.Format(_originalValue, arg0, arg1);
-            SetText(format);
+            var format = _originalValue;
+            var translation = LocalizationUtils.GetPhrase(Identificator, string.Empty);
+            if (!string.IsNullOrEmpty(translation)) format = translation;
+
+            var text = string.Format(format, arg0, arg1);
+            SetText(text);
         }
 
         public void SetActive(bool isActive)

@@ -5,6 +5,7 @@ using StatefulUI.Runtime.Localization;
 using StatefulUI.Runtime.References;
 using StatefulUI.Runtime.States;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace StatefulUI.Runtime.Core
@@ -32,6 +33,8 @@ namespace StatefulUI.Runtime.Core
         public List<TextInputReference> TextsInputs;
         public List<ObjectReference> Objects;
         public List<StateReference> States;
+
+        public Dictionary<int, StateReference> StateByRole { get; } = new();
         
         public bool LocalizeOnEnable = true;
         public bool ApplyInitialStateOnEnable;
@@ -47,6 +50,10 @@ namespace StatefulUI.Runtime.Core
         private void Awake()
         {
             _stateProcessor ??= new StateProcessor(this);
+
+            if (States != null)
+                foreach (var state in States)
+                    StateByRole.Add(state.Role, state);
         }
 
         private void OnEnable()
@@ -79,6 +86,8 @@ namespace StatefulUI.Runtime.Core
 
         public void Localize()
         {
+            if (!LocalizeOnEnable) return;
+
             foreach (var reference in Texts)
             {
                 if (reference.Identificator.IsNonEmpty() && !reference.IsEmpty && reference.Localize)
@@ -159,6 +168,7 @@ namespace StatefulUI.Runtime.Core
         
         public float ApplyState(StateReference state)
         {
+            if (_stateProcessor == null) return 0f;
             StateHistory.Add(state.Role);
             var duration = _stateProcessor.Apply(state);
             return duration;
@@ -251,7 +261,26 @@ namespace StatefulUI.Runtime.Core
                 }
             }
         }
-        
+
+        public void SetButtonListenerByRawRole(int role, UnityAction listener)
+        {
+            if (!HasButton(role))
+            {
+                var go = gameObject;
+                var roleName = RoleUtils.GetName(RoleUtils.ButtonRoleType, role);
+                Debug.LogError($"View {name} does not contain button with role {roleName}, scene path: {go.GetScenePath()}", go);
+                return;
+            }
+
+            for (var i = 0; i < Buttons.Count; i++)
+            {
+                if (Buttons[i].Role == role)
+                {
+                    Buttons[i].Button.onClick.AddListener(listener);
+                }
+            }
+        }
+
         public void SetImageByRawRole(int role, string spritePath)
         {
             if (!HasImage(role))
@@ -387,20 +416,33 @@ namespace StatefulUI.Runtime.Core
             return null;
         }
 
-        public void SetRawTextByRole(int role, object text) => SetText(role, text);
+        public void SetRawTextByRole(int role, string text) => SetText(role, text);
 
-        public void SetRawTextValuesByRole(int role, params object[] args)
+        public void SetRawTextValuesByRole(int role, params string[] args)
         {
             foreach (var reference in Texts)
             {
                 if (reference.Role == role && reference.Identificator.IsNonEmpty())
                 {
-                    reference.SetText(string.Format(LocalizationUtils.GetPhrase(reference.Identificator, "---"), args));
+                    // reference.SetText(string.Format(LocalizationUtils.GetPhrase(reference.Identificator, "---"), args));
+                    reference.SetText(string.Format(reference.Value, args));
                 }
             }
         }
 
-        private void SetText(int role, object text)
+        public void SetFormattedTextByRawRole(int role, params string[] args)
+        {
+            foreach (var reference in Texts)
+            {
+                if (reference.Role == role && reference.Identificator.IsNonEmpty())
+                {
+                    if (args.Length == 1) reference.SetFormattedText(args[0]);
+                    else if (args.Length == 2) reference.SetFormattedText(args[0], args[1]);
+                }
+            }
+        }
+
+        private void SetText(int role, string text)
         {
             for (var i = 0; i < Texts.Count; i++)
             {

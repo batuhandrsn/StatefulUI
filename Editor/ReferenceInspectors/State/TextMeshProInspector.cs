@@ -19,7 +19,7 @@ namespace StatefulUI.Editor.ReferenceInspectors.State
 
             switch ((TextMeshProImpactType)impact.intValue)
             {
-                case TextMeshProImpactType.SetColor :
+                case TextMeshProImpactType.SetColor:
                     DrawProperty(property, ref position, nameof(StateDescription.TextMeshProColor), "Color");
                     break;
                 case TextMeshProImpactType.SetPhrase:
@@ -34,11 +34,17 @@ namespace StatefulUI.Editor.ReferenceInspectors.State
                 case TextMeshProImpactType.SetMaxFontSize:
                     DrawProperty(property, ref position, nameof(StateDescription.TextMeshProMaxFontSize), "Max font size");
                     break;
-                case TextMeshProImpactType.SetFont :
+                case TextMeshProImpactType.SetFont:
                     DrawProperty(property, ref position, nameof(StateDescription.TextMeshProFont), "Font");
                     break;
-                case TextMeshProImpactType.SetHorizontalAlignment :
+                case TextMeshProImpactType.SetHorizontalAlignment:
                     DrawProperty(property, ref position, nameof(StateDescription.TextMeshProTextHorizontalAlignment), "Horizontal Alignment");
+                    break;
+                case TextMeshProImpactType.SetFontMaterial:
+                    DrawProperty(property, ref position, nameof(StateDescription.TextMeshProFontMaterial), "Font Material");
+                    break;
+                case TextMeshProImpactType.SetText:
+                    DrawProperty(property, ref position, nameof(StateDescription.TextMeshProText), "Text");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

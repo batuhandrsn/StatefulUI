@@ -27,7 +27,8 @@ namespace StatefulUI.Runtime.Core
             }
             else
             {
-                Instances.Add(Instantiate(Prefab, Root));
+                var instance = Instantiate(Prefab, Root);
+                Instances.Add(instance);
             }
 
             OnAddTestItem?.Invoke();
@@ -44,8 +45,7 @@ namespace StatefulUI.Runtime.Core
             OnClearTestItems?.Invoke();
         }
 
-        public void FillWithItems<TL>(IEnumerable<TL> items, Action<StatefulComponent, TL> action,
-            bool keepItems = false)
+        public void FillWithItems<TL>(IEnumerable<TL> items, Action<StatefulComponent, TL> action, bool keepItems = false)
         {
             if (!keepItems)
             {
@@ -57,9 +57,9 @@ namespace StatefulUI.Runtime.Core
                 var view = AddInstance().GetComponentAlways<StatefulComponent>();
                 view.Localize();
 
-                foreach (var InnerComponent in view.InnerComponents)
+                foreach (var innerComponent in view.InnerComponents)
                 {
-                    InnerComponent.InnerComponent.Localize();
+                    innerComponent.InnerComponent.Localize();
                 }
 
                 action(view, item);
@@ -97,12 +97,12 @@ namespace StatefulUI.Runtime.Core
 
         public StatefulComponent AddStatefulComponent()
         {
-            var view = AddInstance().GetComponent<StatefulComponent>();
+            var view = AddInstance<StatefulComponent>();
             view.Localize();
 
-            foreach (var InnerComponent in view.InnerComponents)
+            foreach (var innerComponent in view.InnerComponents)
             {
-                InnerComponent.InnerComponent.Localize();
+                innerComponent.InnerComponent.Localize();
             }
 
             return view;
@@ -110,25 +110,36 @@ namespace StatefulUI.Runtime.Core
 
         public void Clear()
         {
-            Instances.RemoveAll(go => go == null);
-
-            foreach (var instance in Instances)
+            for (var i = Instances.Count - 1; i >= 0; i--)
             {
+                var instance = Instances[i];
+                if (instance == null)
+                {
+                    Instances.RemoveAt(i);
+                    continue;
+                }
                 instance.SetActive(false);
             }
         }
 
-        public void Remove(GameObject go, bool withDestroy = true)
+        public void Remove(GameObject target, bool withDestroy = true)
         {
-            if (withDestroy) Instances.RemoveAll(obj => go == obj);
-            go.SetActive(false);
+            if (withDestroy)
+            {
+                for (var i = Instances.Count - 1; i >= 0; i--)
+                {
+                    var instance = Instances[i];
+                    if (instance != target) continue;
+                    Instances.Remove(target);
+                }
+            }
+            target.SetActive(false);
         }
 
-        public void Restore(GameObject go)
+        public void Restore(GameObject target)
         {
-            Instances.Add(go);
-
-            go.SetActive(true);
+            Instances.Add(target);
+            target.SetActive(true);
         }
     }
 }

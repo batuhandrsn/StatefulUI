@@ -225,6 +225,16 @@ namespace StatefulUI.Runtime.States
                     desc.TextMeshPro.horizontalAlignment = desc.TextMeshProTextHorizontalAlignment;
                     break;
                 }
+                case TextMeshProImpactType.SetFontMaterial:
+                {
+                    desc.TextMeshPro.fontSharedMaterial = desc.TextMeshProFontMaterial;
+                    break;
+                }
+                case TextMeshProImpactType.SetText:
+                {
+                    desc.TextMeshPro.SetText(desc.TextMeshProText);
+                    break;
+                }
             }
         }
 

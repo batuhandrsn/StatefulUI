@@ -139,6 +139,8 @@ namespace StatefulUI.Runtime.States
         SetHorizontalAlignment,
         SetFont,
         SetMaxFontSize,
+        SetFontMaterial,
+        SetText,
     }
 
     public enum TextColorImpactType
